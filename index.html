@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JS Image</title>
+    <link rel="shortcut icon" href="./favicon.png"/>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+    <div id="wrapper">
+        <!--<div id="projectInfo">
+            <h1>Project Information</h1>
+            <hr/>
+            <ul>
+                <p>This project is based on HTML5 <span>canvas.</span></p>
+                <p>There are 2 processing methods defined: <span> I. To Gray Image</span> AND <span>II. To 2-level Image</span>.</p>
+                <p>"To Gray Image" is used for changing a <span>RGBA image</span> to gray image.</p>
+                <p>
+                    And the other one is used for changing a <span>gray image</span> to a 2-level image. <br/>
+                    It can also be used for processing RGBA image, but the result is not so good.
+                </p>
+                <p>More function will be included in the later time.</p>
+                <p>Hope you enjoy using it. :)</p>
+            </ul>
+        </div>-->
+        <div id="header">
+            <h1>Simple JS Image Processor</h1>
+            <div id="menu">
+                <ul>
+                    <li id="openBtn">
+                        Open Image
+                        <input type="file" id="file"/>
+                    </li>
+                    <li id="toGrayBtn">To Gray Image</li>
+                    <li id="toBinaryBtn">To 2-level Image</li>
+                    <li id="restoreBtn">Restore To Original Image</li>
+                    <li id="saveBtn">Save Image</li>
+                    <li id="infoBtn">Info</li>
+                </ul>
+            </div>
+        </div>
+        <div id="content">
+            <div id="info">:)</div>
+            <canvas id="canvas"></canvas>
+        </div>
+        <div id="footer">
+            <span class="foot-info">2015-10-25</span>
+            |
+            <span class="foot-info">ZhouJihao</span>
+            |
+            <span class="foot-info">SDCS@SYSU</span>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="util.js"></script>
+    <script type="text/javascript" src="hci.js"></script>
+    <script type="text/javascript" src="rgb.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+
+</body>
+</html>

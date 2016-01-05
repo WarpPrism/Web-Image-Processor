@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stereo Matching</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row jumbotron">
+            <h2>
+                <span class="glyphicon glyphicon-picture" aria-hidden="true"></span>
+                &nbsp;Stereo Matching(立体匹配)
+            </h2>
+            <p>Stereo Matching is the task of estimating the disparity map from pre-processed left- and right-eye
+                images (stereo images) and it is one of the most fundamental problems in computer vision.</p>
+            <p class="text-danger">建议使用Chrome浏览器打开此网站，其采用的JavaScript V8引擎稳定且高效。</p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="canvas-div well">
+                    <h3 class="header">Left-Eye Image</h3>
+                    <canvas id="canvasL"></canvas>
+                    <div class="btn btn-primary open-btn" id="btnL">
+                        <span class="glyphicon glyphicon-open" aria-hidden="true"></span>
+                        &nbsp;open
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="canvas-div well">
+                    <h3 class="header">Right-Eye Image</h3>
+                    <canvas id="canvasR"></canvas>
+                    <div class="btn btn-primary open-btn" id="btnR">
+                        <span class="glyphicon glyphicon-open" aria-hidden="true"></span>
+                        &nbsp;open
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>
+                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                            &nbsp;Option
+                        </h4>
+                    </div>
+                    <div class="panel-body">
+                        <div id="option-div">
+                            <div class="btn-group option-btn">
+                                <button type="button" class="btn btn-primary">SSD Algorithm</button>
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#" id="ssd_l">以左图为基准 SSD_L</a></li>
+                                    <li><a href="#" id="ssd_r">以右图为基准 SSD_R</a></li>
+                                    <li class="divider"></li>
+                                    <li><a style="font-weight: bold; color: #ac2925">该算法较快，但得出的视差图质量不好</a></li>
+                                </ul>
+                            </div>
+                            <div class="btn-group option-btn">
+                                <button type="button" class="btn btn-primary">NCC Algorithm</button>
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#" id="ncc_l">以左图为基准 NCC_L</a></li>
+                                    <li><a href="#" id="ncc_r">以右图为基准 NCC_R</a></li>
+                                    <li class="divider"></li>
+                                    <li><a style="font-weight: bold; color: #ac2925">NCC算法，和SSD类似</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="btn-group option-btn">
+                                <button type="button" class="btn btn-primary">ASW Algorithm</button>
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="caret"></span>
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#" id="asw_l">以左图为基准 ASW_L</a></li>
+                                    <li><a href="#" id="asw_r">以右图为基准 ASW_R</a></li>
+                                    <li class="divider"></li>
+                                    <li><a style="font-weight: bold; color: #ac2925">该算法复杂度较高，请等待几分钟，期间不要有其他操作</a></li>
+                                    <li><a style="font-weight: bold; color: #ac2925">浏览器 无响应 为正常情况</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4>
+                            <span class="glyphicon glyphicon-volume-up" aria-hidden="true"></span>
+                            &nbsp;Tips
+                        </h4>
+                    </div>
+                    <div class="panel-body">
+                        <p id="tip" class="text-danger"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-8">
+                <div class=" canvas-div well">
+                    <h3 class="header">
+                        &nbsp;Result
+                    </h3>
+                    <canvas id="result"></canvas>
+                    <a class="btn btn-success" id="save-btn">
+                        <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
+                        &nbsp;Save Result
+                    </a>
+                    <div class="btn btn-danger" id="clear-btn">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        &nbsp;Clear Result
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="input-group">
+            <input type="file" class="form-control" id="fileL"/>
+            <input type="file" class="form-control" id="fileR"/>
+        </div>
+    </div>
+
+    <div class="row" id="footer">
+        <span class="footer-item">2016.01 &copy; ZhouJihao</span>
+    </div>
+
+    <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="util.js"></script>
+    <script type="text/javascript" src="ssd.js"></script>
+    <script type="text/javascript" src="asw.js"></script>
+    <script type="text/javascript" src="hci.js"></script>
+    <script type="text/javascript" src="main.js"></script>
+</body>
+</html>

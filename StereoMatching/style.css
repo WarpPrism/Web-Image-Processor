@@ -1,0 +1,67 @@
+/*body, h1, h2, h3, h4, h5, p, div, span {
+    margin: 0;
+    padding: 0;
+}*/
+body {
+
+}
+
+.jumbotron {
+    border-bottom: solid 5px #2b669a;
+    background: #ffffff;
+}
+
+.canvas-div {
+    text-align: center;
+    position: relative;
+}
+
+.open-btn, #save-btn, #clear-btn {
+    margin: 15px 5px;
+}
+
+#canvasL, #canvasR, #result {
+    display: block;
+    border: solid 5px #ffffff;
+    -webkit-box-shadow: 1px 1px 10px gray;
+    -moz-box-shadow: 1px 1px 10px gray;
+    box-shadow: 1px 1px 10px gray;
+    position: relative;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    transform: translateX(-50%);
+
+}
+
+input#fileL, input#fileR {
+    display: none;
+}
+
+.panel {
+}
+
+#option-div {
+    text-align: left;
+    position: relative;
+}
+.option-btn {
+    margin: 5px;
+}
+
+.header {
+    margin: 10px 0 15px 0;
+}
+
+.well {
+    border: dotted 2px #2b669a;
+    background: none;
+}
+
+#footer {
+    text-align: center;
+    padding: 5px;
+    margin: 15px;
+}
