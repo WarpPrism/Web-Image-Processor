@@ -24,6 +24,16 @@ var init = function() {
     resizeCanvas(G.canvasR, 400, 300);
     resizeCanvas(G.result, 400, 300);
 
+
+    G.imgL.src = "./example/view1.png";
+    G.imgR.src = "./example/view5.png";
+    G.imgL.onload = function() {
+        imread(G.canvasL, G.cxtL, G.imgL, "L");
+    };
+    G.imgR.onload = function() {
+        imread(G.canvasR, G.cxtR, G.imgR, "R");
+    };
+    
     var ua = navigator.userAgent.toLowerCase();
     if (ua.indexOf("chrome") != -1 && ua.indexOf("edge") == -1) {
         G.tip.innerHTML = "UserAgent is Chrome!";
@@ -35,14 +45,6 @@ var init = function() {
         G.tip.innerHTML = "UserAgent is Firefox!";
     }
 
-    G.imgL.src = "./example/view1.png";
-    G.imgR.src = "./example/view5.png";
-    G.imgL.onload = function() {
-        imread(G.canvasL, G.cxtL, G.imgL, "L");
-    };
-    G.imgR.onload = function() {
-        imread(G.canvasR, G.cxtR, G.imgR, "R");
-    };
 };
 
 $(function() {

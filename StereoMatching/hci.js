@@ -43,28 +43,36 @@ function HCI() {
     };
 
     addHandler(ssd_l, "click", function(e) {
-        G.tip.innerHTML = "SSD_L Algorithm.";
         e = e || window.event;
         e.preventDefault();
         SSD_L(5);
     });
 
     addHandler(ssd_r, "click", function(e) {
-        G.tip.innerHTML = "SSD_R Algorithm.";
         e = e || window.event;
         e.preventDefault();
         SSD_R(5);
     });
 
+    addHandler(ncc_l, "click", function(e) {
+        e = e || window.event;
+        e.preventDefault();
+        NCC_L(7);
+    });
+
+    addHandler(ncc_r, "click", function(e) {
+        e = e || window.event;
+        e.preventDefault();
+        NCC_R(7);
+    });
+
     addHandler(asw_l, "click", function(e) {
-        G.tip.innerHTML = "ASW_L Algorithm.";
         e = e || window.event;
         e.preventDefault();
         ASW_L(5);
     });
 
     addHandler(asw_r, "click", function(e) {
-        console.log("ASW_R Algorithm.");
         e = e || window.event;
         e.preventDefault();
         ASW_R(5);
