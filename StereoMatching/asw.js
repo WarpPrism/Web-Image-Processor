@@ -231,6 +231,6 @@ function ASW_R(patch_size) {
     }
 
     showGrayImgFrom2dimArray(output);
-    G.tip.innerHTML = "SSD_R Complete!";
+    G.tip.innerHTML = "ASW_R Complete!";
 
 }

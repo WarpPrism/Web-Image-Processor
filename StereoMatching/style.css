@@ -65,3 +65,8 @@ input#fileL, input#fileR {
     padding: 5px;
     margin: 15px;
 }
+
+.code-div {
+    margin: 0;
+    padding: 0;
+}
