@@ -42,6 +42,16 @@ function HCI() {
         }
     };
 
+    $("#ssd").click(function() {
+       $("#ssd_modal").modal();
+    });
+    $("#ncc").click(function() {
+        $("#ncc_modal").modal();
+    });
+    $("#asw").click(function() {
+        $("#asw_modal").modal();
+    });
+
     addHandler(ssd_l, "click", function(e) {
         e = e || window.event;
         e.preventDefault();

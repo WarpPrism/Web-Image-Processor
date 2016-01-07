@@ -54,7 +54,7 @@
                     <div class="panel-body">
                         <div id="option-div">
                             <div class="btn-group option-btn">
-                                <button type="button" class="btn btn-primary">SSD Algorithm</button>
+                                <button type="button" class="btn btn-primary" id="ssd">SSD Algorithm</button>
                                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="caret"></span>
                                     <span class="sr-only">Toggle Dropdown</span>
@@ -67,7 +67,7 @@
                                 </ul>
                             </div>
                             <div class="btn-group option-btn">
-                                <button type="button" class="btn btn-primary">NCC Algorithm</button>
+                                <button type="button" class="btn btn-primary" id="ncc">NCC Algorithm</button>
                                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="caret"></span>
                                     <span class="sr-only">Toggle Dropdown</span>
@@ -81,7 +81,7 @@
                             </div>
 
                             <div class="btn-group option-btn">
-                                <button type="button" class="btn btn-primary">ASW Algorithm</button>
+                                <button type="button" class="btn btn-primary" id="asw">ASW Algorithm</button>
                                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="caret"></span>
                                     <span class="sr-only">Toggle Dropdown</span>
@@ -116,6 +116,7 @@
                     <h3 class="header">
                         &nbsp;Result
                     </h3>
+                    <p class="text-danger">Canvas渲染图片不清晰，<strong>下载</strong>后可以得到更清晰的结果</p>
                     <canvas id="result"></canvas>
                     <a class="btn btn-success" id="save-btn">
                         <span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span>
@@ -140,6 +141,158 @@
 
     <div class="row" id="footer">
         <span class="footer-item">2016.01 &copy; <a href="https://github.com/warpprism" target="_blank">ZhouJihao</a></span>
+    </div>
+
+
+    <div class="modal fade" id="ncc_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">NCC Algorithm</h4>
+                </div>
+                <div class="modal-body">
+                    <pre>
+for (i = n; i < height - n; i++) {
+        for (var j = n; j < width - n; j++) {
+            var max_cost = 0;
+            var final_disparity = d_min;
+
+            for (var d = d_min; d <= d_max; d++) {
+                if (j + n + d >= width) {
+                    break;
+                }
+
+                var sum1 = 0, sum2 = 0, sum3 = 0;
+                var cost = 0;
+                for (var x = i - n; x <= i + n; x++) {
+                    for (var y = j - n; y <= j + n; y++) {
+                        sum1 += (left[x][y + d] * right[x][y]);
+                        sum2 += Math.pow(right[x][y], 2);
+                        sum3 += Math.pow(left[x][y + d], 2);
+                    }
+                }
+                cost = sum1 / Math.sqrt(sum2 * sum3);
+                if (cost >= max_cost) {
+                    max_cost = cost;
+                    final_disparity = d;
+                }
+            }
+
+            output[i][j] = final_disparity * 3;
+        }
+    }
+                    </pre>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="ssd_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">SSD Algorithm</h4>
+                </div>
+                <div class="modal-body">
+                    <pre>
+var n = parseInt((patch_size - 1) / 2);
+
+    for (var i = n; i < height - n; i++) {
+        for (var j = n; j < width - n; j++) {
+            var min_sum = 9999;
+            var final_disparity = d_min;
+
+            for (var d = d_min; d <= d_max; d++) {
+                if (j - n - d < 0) {
+                    break;
+                }
+
+                var SUM = 0.0;
+                for (var u = i - n; u <= i + n; u++) {
+                    for (var v = j - n; v <= j + n; v++) {
+                        var temp = Math.pow((left[u][v] - right[u][v - d]), 2);
+                        SUM += temp;
+                    }
+                }
+
+                if (SUM <= min_sum) {
+                    min_sum = SUM;
+                    final_disparity = d;
+                }
+            }
+
+            output[i][j] = final_disparity * 3.0;
+        }
+    }
+                    </pre>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="asw_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">ASW Algorithm</h4>
+                </div>
+                <div class="modal-body">
+                    <pre>
+var n = parseInt((patch_size - 1) / 2);
+    for (var i = n; i < height - n; i++) {
+        for (var j = n; j < width - n; j++) {
+            var min_cost = 99999;
+            var final_disparity = d_min;
+
+            for (var d = d_min; d <= d_max; d++) {
+                if (j + n + d >= width) {
+                    break;
+                }
+
+                var cost;
+                var sum1 = 0.0, sum2 = 0.0;
+                for (var h = i - n; h <= i + n; h++) {
+                    for (var w = j - n; w <= j + n; w++) {
+                        // 忽略中心点？
+                        var delta_g = Math.sqrt(Math.pow((h - i), 2) + Math.pow((w - j), 2));
+                        var delta_c_L = getLabDistance(left[h][w + d], left[i][j + d]);
+                        var delta_c_R = getLabDistance(right[h][w], right[i][j]);
+
+                        var wL = Math.exp((-delta_g) / 7 - (delta_c_L) / 7); // γp = 7 γc = 7
+                        var wR = Math.exp((-delta_g) / 7 - (delta_c_R) / 7); // γp = 7 γc = 7
+                        var e = Math.abs(left[h][w + d][0] - right[h][w][0])
+                            + Math.abs(left[h][w + d][1] - right[h][w][1])
+                            + Math.abs(left[h][w + d][2] - right[h][w][2]);
+
+                        sum1 += wL * wR * e;
+                        sum2 += wL * wR;
+                    }
+                }
+
+                cost = parseFloat(sum1 / sum2);
+                if (cost < min_cost) {
+                    min_cost = cost;
+                    final_disparity = d;
+                }
+            }
+
+            output[i][j] = final_disparity * 3;
+        }
+    }
+                    </pre>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>

@@ -188,7 +188,6 @@ function ASW_R(patch_size) {
     }
 
     var n = parseInt((patch_size - 1) / 2);
-
     for (var i = n; i < height - n; i++) {
         for (var j = n; j < width - n; j++) {
             var min_cost = 99999;
