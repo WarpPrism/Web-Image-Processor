@@ -22,7 +22,7 @@ var init = function() {
 
     resizeCanvas(G.canvasL, 400, 300);
     resizeCanvas(G.canvasR, 400, 300);
-    resizeCanvas(G.result, 400, 300);
+    resizeCanvas(G.result, 450, 350);
 
 
     G.imgL.src = "./example/view1.png";

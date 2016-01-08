@@ -99,11 +99,12 @@ function HCI() {
             return;
         }
         var dataURL = G.result.toDataURL("image/png").replace("image/png", "image/octet-stream");
-        var filename = "result.png";
+        var filename = "name_disp1_ASW.png";
 
         save_btn.download = filename;
         save_btn.href = dataURL;
 
         /*saveFile(dataURL, filename);*/
     });
+
 }

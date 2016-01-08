@@ -139,8 +139,8 @@ function ASW_L(patch_size) {
                         var delta_c_L = getLabDistance(left[h][w], left[i][j]);
                         var delta_c_R = getLabDistance(right[h][w - d], right[i][j - d]);
 
-                        var wL = Math.exp((-delta_g) / 7 - (delta_c_L) / 7); // γp = 7 γc = 7
-                        var wR = Math.exp((-delta_g) / 7 - (delta_c_R) / 7); // γp = 7 γc = 7
+                        var wL = Math.exp((-delta_g) / 7 - (delta_c_L) / 35); // γp = 7 γc = 35
+                        var wR = Math.exp((-delta_g) / 7 - (delta_c_R) / 35); // γp = 7 γc = 35
                         var e = Math.abs(left[h][w][0] - right[h][w - d][0])
                                 + Math.abs(left[h][w][1] - right[h][w - d][1])
                                 + Math.abs(left[h][w][2] - right[h][w - d][2]);
@@ -207,8 +207,8 @@ function ASW_R(patch_size) {
                         var delta_c_L = getLabDistance(left[h][w + d], left[i][j + d]);
                         var delta_c_R = getLabDistance(right[h][w], right[i][j]);
 
-                        var wL = Math.exp((-delta_g) / 7 - (delta_c_L) / 7); // γp = 7 γc = 7
-                        var wR = Math.exp((-delta_g) / 7 - (delta_c_R) / 7); // γp = 7 γc = 7
+                        var wL = Math.exp((-delta_g) / 7 - (delta_c_L) / 35); // γp = 7 γc = 35
+                        var wR = Math.exp((-delta_g) / 7 - (delta_c_R) / 35); // γp = 7 γc = 35
                         var e = Math.abs(left[h][w + d][0] - right[h][w][0])
                             + Math.abs(left[h][w + d][1] - right[h][w][1])
                             + Math.abs(left[h][w + d][2] - right[h][w][2]);

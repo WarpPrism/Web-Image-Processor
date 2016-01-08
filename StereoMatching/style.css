@@ -17,12 +17,13 @@ body {
 }
 
 .open-btn, #save-btn, #clear-btn {
-    margin: 15px 5px;
+    margin: 5px 5px;
 }
 
 #canvasL, #canvasR, #result {
     display: block;
     border: solid 5px #ffffff;
+    margin: 20px 0;
     -webkit-box-shadow: 1px 1px 10px gray;
     -moz-box-shadow: 1px 1px 10px gray;
     box-shadow: 1px 1px 10px gray;
@@ -64,4 +65,13 @@ input#fileL, input#fileR {
     text-align: center;
     padding: 5px;
     margin: 15px;
+}
+
+.ground-truth {
+    padding: 10px;
+    border-bottom: solid 1px #2b669a;
+}
+
+.bad-ratio {
+    padding: 10px;
 }

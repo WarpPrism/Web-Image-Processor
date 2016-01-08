@@ -106,7 +106,7 @@
                         </h4>
                     </div>
                     <div class="panel-body">
-                        <p id="tip" class="text-danger"></p>
+                        <h4 id="tip" class="text-danger"></h4>
                     </div>
                 </div>
             </div>
@@ -132,13 +132,6 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="input-group">
-            <input type="file" class="form-control" id="fileL"/>
-            <input type="file" class="form-control" id="fileR"/>
-        </div>
-    </div>
-
     <div class="row" id="footer">
         <span class="footer-item">2016.01 &copy; <a href="https://github.com/warpprism" target="_blank">ZhouJihao</a></span>
     </div>
@@ -154,34 +147,31 @@
                 <div class="modal-body">
                     <pre>
 for (i = n; i < height - n; i++) {
-        for (var j = n; j < width - n; j++) {
-            var max_cost = 0;
-            var final_disparity = d_min;
-
-            for (var d = d_min; d <= d_max; d++) {
-                if (j + n + d >= width) {
-                    break;
-                }
-
-                var sum1 = 0, sum2 = 0, sum3 = 0;
-                var cost = 0;
-                for (var x = i - n; x <= i + n; x++) {
-                    for (var y = j - n; y <= j + n; y++) {
-                        sum1 += (left[x][y + d] * right[x][y]);
-                        sum2 += Math.pow(right[x][y], 2);
-                        sum3 += Math.pow(left[x][y + d], 2);
-                    }
-                }
-                cost = sum1 / Math.sqrt(sum2 * sum3);
-                if (cost >= max_cost) {
-                    max_cost = cost;
-                    final_disparity = d;
+    for (var j = n; j < width - n; j++) {
+        var max_cost = 0;
+        var final_disparity = d_min;
+        for (var d = d_min; d <= d_max; d++) {
+            if (j + n + d >= width) {
+                break;
+            }
+            var sum1 = 0, sum2 = 0, sum3 = 0;
+            var cost = 0;
+            for (var x = i - n; x <= i + n; x++) {
+                for (var y = j - n; y <= j + n; y++) {
+                    sum1 += (left[x][y + d] * right[x][y]);
+                    sum2 += Math.pow(right[x][y], 2);
+                    sum3 += Math.pow(left[x][y + d], 2);
                 }
             }
-
-            output[i][j] = final_disparity * 3;
+            cost = sum1 / Math.sqrt(sum2 * sum3);
+            if (cost >= max_cost) {
+                max_cost = cost;
+                final_disparity = d;
+            }
         }
+        output[i][j] = final_disparity * 3;
     }
+}
                     </pre>
                 </div>
                 <div class="modal-footer">
@@ -200,34 +190,29 @@ for (i = n; i < height - n; i++) {
                 <div class="modal-body">
                     <pre>
 var n = parseInt((patch_size - 1) / 2);
-
-    for (var i = n; i < height - n; i++) {
-        for (var j = n; j < width - n; j++) {
-            var min_sum = 9999;
-            var final_disparity = d_min;
-
-            for (var d = d_min; d <= d_max; d++) {
-                if (j - n - d < 0) {
-                    break;
-                }
-
-                var SUM = 0.0;
-                for (var u = i - n; u <= i + n; u++) {
-                    for (var v = j - n; v <= j + n; v++) {
-                        var temp = Math.pow((left[u][v] - right[u][v - d]), 2);
-                        SUM += temp;
-                    }
-                }
-
-                if (SUM <= min_sum) {
-                    min_sum = SUM;
-                    final_disparity = d;
+for (var i = n; i < height - n; i++) {
+    for (var j = n; j < width - n; j++) {
+        var min_sum = 9999;
+        var final_disparity = d_min;
+        for (var d = d_min; d <= d_max; d++) {
+            if (j - n - d < 0) {
+                break;
+            }
+            var SUM = 0.0;
+            for (var u = i - n; u <= i + n; u++) {
+                for (var v = j - n; v <= j + n; v++) {
+                    var temp = Math.pow((left[u][v] - right[u][v - d]), 2);
+                    SUM += temp;
                 }
             }
-
-            output[i][j] = final_disparity * 3.0;
+            if (SUM <= min_sum) {
+                min_sum = SUM;
+                final_disparity = d;
+            }
         }
+        output[i][j] = final_disparity * 3.0;
     }
+}
                     </pre>
                 </div>
                 <div class="modal-footer">
@@ -246,52 +231,53 @@ var n = parseInt((patch_size - 1) / 2);
                 <div class="modal-body">
                     <pre>
 var n = parseInt((patch_size - 1) / 2);
-    for (var i = n; i < height - n; i++) {
-        for (var j = n; j < width - n; j++) {
-            var min_cost = 99999;
-            var final_disparity = d_min;
-
-            for (var d = d_min; d <= d_max; d++) {
-                if (j + n + d >= width) {
-                    break;
-                }
-
-                var cost;
-                var sum1 = 0.0, sum2 = 0.0;
-                for (var h = i - n; h <= i + n; h++) {
-                    for (var w = j - n; w <= j + n; w++) {
-                        // 忽略中心点？
-                        var delta_g = Math.sqrt(Math.pow((h - i), 2) + Math.pow((w - j), 2));
-                        var delta_c_L = getLabDistance(left[h][w + d], left[i][j + d]);
-                        var delta_c_R = getLabDistance(right[h][w], right[i][j]);
-
-                        var wL = Math.exp((-delta_g) / 7 - (delta_c_L) / 7); // γp = 7 γc = 7
-                        var wR = Math.exp((-delta_g) / 7 - (delta_c_R) / 7); // γp = 7 γc = 7
-                        var e = Math.abs(left[h][w + d][0] - right[h][w][0])
-                            + Math.abs(left[h][w + d][1] - right[h][w][1])
-                            + Math.abs(left[h][w + d][2] - right[h][w][2]);
-
-                        sum1 += wL * wR * e;
-                        sum2 += wL * wR;
-                    }
-                }
-
-                cost = parseFloat(sum1 / sum2);
-                if (cost < min_cost) {
-                    min_cost = cost;
-                    final_disparity = d;
+for (var i = n; i < height - n; i++) {
+    for (var j = n; j < width - n; j++) {
+        var min_cost = 99999;
+        var final_disparity = d_min;
+        for (var d = d_min; d <= d_max; d++) {
+            if (j + n + d >= width) {
+                break;
+            }
+            var cost;
+            var sum1 = 0.0, sum2 = 0.0;
+            for (var h = i - n; h <= i + n; h++) {
+                for (var w = j - n; w <= j + n; w++) {
+                    // 忽略中心点？
+                    var delta_g = Math.sqrt(Math.pow((h - i), 2) + Math.pow((w - j), 2));
+                    var delta_c_L = getLabDistance(left[h][w + d], left[i][j + d]);
+                    var delta_c_R = getLabDistance(right[h][w], right[i][j]);
+                    var wL = Math.exp((-delta_g) / 7 - (delta_c_L) / 7); // γp = 7 γc = 7
+                    var wR = Math.exp((-delta_g) / 7 - (delta_c_R) / 7); // γp = 7 γc = 7
+                    var e = Math.abs(left[h][w + d][0] - right[h][w][0])
+                        + Math.abs(left[h][w + d][1] - right[h][w][1])
+                        + Math.abs(left[h][w + d][2] - right[h][w][2]);
+                    sum1 += wL * wR * e;
+                    sum2 += wL * wR;
                 }
             }
-
-            output[i][j] = final_disparity * 3;
+            cost = parseFloat(sum1 / sum2);
+            if (cost < min_cost) {
+                min_cost = cost;
+                final_disparity = d;
+            }
         }
+        output[i][j] = final_disparity * 3;
     }
+}
                     </pre>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-success" data-dismiss="modal">Close</button>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="input-group">
+            <input type="file" class="form-control" id="fileL"/>
+            <input type="file" class="form-control" id="fileR"/>
         </div>
     </div>
 
