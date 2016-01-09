@@ -117,3 +117,4 @@ function NCC_R(patch_size) {
     showGrayImgFrom2dimArray(output);
     G.tip.innerHTML = "NCC_R Complete!";
 }
+
