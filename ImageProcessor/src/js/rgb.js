@@ -4,7 +4,7 @@
 
 function getRChannel() {
     var output = [];
-    if (G.img_data == null) {
+    if (G.img_data === null) {
         console.log("No ImageData");
     }
     for (var i = 0; i < G.img_data.data.length; i+=4) {
@@ -15,7 +15,7 @@ function getRChannel() {
 
 function getGChannel() {
     var output = [];
-    if (G.img_data == null) {
+    if (G.img_data === null) {
         console.log("No ImageData");
     }
     for (var i = 1; i < G.img_data.data.length; i+=4) {
@@ -26,7 +26,7 @@ function getGChannel() {
 
 function getBChannel() {
     var output = [];
-    if (G.img_data == null) {
+    if (G.img_data === null) {
         console.log("No ImageData");
     }
     for (var i = 2; i < G.img_data.data.length; i+=4) {

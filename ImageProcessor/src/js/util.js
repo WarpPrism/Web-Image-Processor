@@ -1,4 +1,4 @@
-/**
+    /**
  * Created by zhoujh on 2016/1/2.
  */
 
@@ -30,7 +30,7 @@ function getFilePath(obj,fileQuery,transImg) {
         var file =fileQuery.files[0];
         var reader = new FileReader();
         reader.onload = function(e){
-            obj.setAttribute("src",e.target.result)
+            obj.setAttribute("src",e.target.result);
         };
         reader.readAsDataURL(file);
     }

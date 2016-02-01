@@ -1,0 +1,42 @@
+// Created by zhoujihao on 16-1-28.
+
+doctype html
+html(lang="en")
+    head
+        link(rel="shortcut icon" href="./favicon.png")
+        link(rel="styleSheet" href="./semantic/semantic.min.css")
+        link(rel="styleSheet" href="./dist/css/style.min.css")
+        title Image Processor
+    body
+        .ui.container-fluid
+            .ui.top.menu
+                .header.item
+                    |Image Processor
+                a#openBtn.item open image
+                a.item save image
+                .ui.simple.dropdown.item option1
+                    i.dropdown.icon
+                    .menu
+                        a.item item1
+                        a.item item2
+            .ui.segment
+                canvas#canvas
+            .ui.segment
+                h3 Image Information
+                table.ui.celled.table
+                    thead
+                        tr
+                            th biaotou
+                            th biaotou
+                    tbody
+                        tr
+                            td 11
+                            td 22
+            .ui.segment
+                canvas#chart(width="500" height="500")
+            input#file(type="file")
+        script(type="text/javascript" src="./semantic/jquery.js")
+        script(type="text/javascript" src="./semantic/semantic.min.js")
+        script(type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js")
+        script(type="text/javascript" src="./dist/js/main.js")
+
