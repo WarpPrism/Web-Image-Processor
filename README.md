@@ -4,3 +4,14 @@ A simple digital image processor using javascript.
 
 Stereo Matching:
 <http://warpprism.github.io/WebImageProcessor/StereoMatching/>
+
+
+Image Processor:
+<http://warpprism.github.io/WebImageProcessor/ImageProcessing/>
+
+Tech Stack:
+- gulp automatic flow. 
+	- run gulp to build and watch the whole project.
+	- sudo npm install --save-dev {all packages}
+- way.min.js an easy way for data binding
+- semantic easy UI components
