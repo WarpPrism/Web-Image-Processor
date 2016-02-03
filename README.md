@@ -7,7 +7,7 @@ Stereo Matching:
 
 
 Image Processor:
-<http://warpprism.github.io/WebImageProcessor/ImageProcessing/>
+<http://warpprism.github.io/WebImageProcessor/ImageProcessor/>
 
 Tech Stack:
 - gulp automatic flow. 
