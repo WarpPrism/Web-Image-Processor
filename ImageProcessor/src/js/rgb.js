@@ -2,41 +2,41 @@
  * Created by zhoujh on 2016/1/2.
  */
 
-function getRChannel() {
+function getRChannel(T) {
     var output = [];
-    if (G.img_data === null) {
+    if (T.img_data === null) {
         console.log("No ImageData");
     }
-    for (var i = 0; i < G.img_data.data.length; i+=4) {
-        output.push(G.img_data.data[i]);
+    for (var i = 0; i < T.img_data.data.length; i+=4) {
+        output.push(T.img_data.data[i]);
     }
     return output;
 }
 
-function getGChannel() {
+function getGChannel(T) {
     var output = [];
-    if (G.img_data === null) {
+    if (T.img_data === null) {
         console.log("No ImageData");
     }
-    for (var i = 1; i < G.img_data.data.length; i+=4) {
-        output.push(G.img_data.data[i]);
+    for (var i = 1; i < T.img_data.data.length; i+=4) {
+        output.push(T.img_data.data[i]);
     }
     return output;
 }
 
-function getBChannel() {
+function getBChannel(T) {
     var output = [];
-    if (G.img_data === null) {
+    if (T.img_data === null) {
         console.log("No ImageData");
     }
-    for (var i = 2; i < G.img_data.data.length; i+=4) {
-        output.push(G.img_data.data[i]);
+    for (var i = 2; i < T.img_data.data.length; i+=4) {
+        output.push(T.img_data.data[i]);
     }
     return output;
 }
 
-function showRedImg() {
-    var red = getRChannel();
+function showRedImg(T) {
+    var red = getRChannel(T);
     var image_data = G.cxt.createImageData(G.img_width, G.img_height);
     var data = [];
     for (var i = 0, j = 0; i < G.img_data_length; i+=4, j++) {
@@ -51,8 +51,8 @@ function showRedImg() {
     G.cxt.putImageData(image_data, 0, 0, 0, 0, G.img_width, G.img_height);
 }
 
-function showGreenImg() {
-    var green = getGChannel();
+function showGreenImg(T) {
+    var green = getGChannel(T);
     var image_data = G.cxt.createImageData(G.img_width, G.img_height);
     var data = [];
     for (var i = 0, j = 0; i < G.img_data_length; i+=4, j++) {
@@ -67,8 +67,8 @@ function showGreenImg() {
     G.cxt.putImageData(image_data, 0, 0, 0, 0, G.img_width, G.img_height);
 }
 
-function showBlueImg() {
-    var blue = getBChannel();
+function showBlueImg(T) {
+    var blue = getBChannel(T);
     var image_data = G.cxt.createImageData(G.img_width, G.img_height);
     var data = [];
     for (var i = 0, j = 0; i < G.img_data_length; i+=4, j++) {

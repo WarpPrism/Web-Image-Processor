@@ -46,8 +46,41 @@ function imread(img) {
     resizeCanvas(width, height);
     G.cxt.drawImage(img, 0, 0, width, height);
     G.img_data = G.cxt.getImageData(0, 0, G.canvas.width, G.canvas.height);
+
     G.img_width = G.img_data.width;
     G.img_height = G.img_data.height;
     G.img_data_length = G.img_width * G.img_height * 4;
-    console.log(G);
+    G.R_channel = getRChannel(G);
+    G.G_channel = getGChannel(G);
+    G.B_channel = getBChannel(G);
+
+    G.img_type = "彩色图像";
+    for (var i = 0; i < 100; i++) {
+        if (G.R_channel[i] === G.B_channel[i] && G.B_channel[i] === G.G_channel[i]) {
+            G.img_type = "灰度图像";
+        }
+    }
+
+    drawSrcChart();
+    makeTable();
+}
+
+function makeTable() {
+    way.set("myTableData", {
+        "image_type": G.img_type,
+        "total_pixel": G.img_data_length,
+        "width": G.img_width + "px",
+        "height": G.img_height + "px"
+    });
+}
+
+function getNewImgData() {
+    NewImg.img_data = G.cxt.getImageData(0, 0, G.canvas.width, G.canvas.height);
+
+    NewImg.img_width = NewImg.img_data.width;
+    NewImg.img_height = NewImg.img_data.height;
+    NewImg.img_data_length = NewImg.img_width * NewImg.img_height * 4;
+    NewImg.R_channel = getRChannel(NewImg);
+    NewImg.G_channel = getGChannel(NewImg);
+    NewImg.B_channel = getBChannel(NewImg);
 }

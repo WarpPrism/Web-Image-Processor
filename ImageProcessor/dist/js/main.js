@@ -18,23 +18,170 @@ function HCI() {
         };
     };
 
-    var chartCtx = $("#chart").get(0).getContext("2d");
-    var data = {
-        labels,
-        datasets : [
-            {
-                fillColor : "rgba(220,220,220,0.5)",
-                strokeColor : "rgba(220,220,220,1)",
-                data : [65,59,90,81,56,55,40]
-            },
-            {
-                fillColor : "rgba(151,187,205,0.5)",
-                strokeColor : "rgba(151,187,205,1)",
-                data : [28,48,40,19,96,27,100]
+    $("#rBtn").click(function() {
+        showRedImg(G);
+        getNewImgData();
+        drawNewChart();
+    });
+    $("#gBtn").click(function() {
+        showGreenImg(G);
+        getNewImgData();
+        drawNewChart();
+    });
+    $("#bBtn").click(function() {
+        showBlueImg(G);
+        getNewImgData();
+        drawNewChart();
+    });
+}
+/**
+ * Created by zhoujihao on 16-2-2.
+ */
+
+function getHistogramData(channel, which) {
+    var data;
+    var T;
+    if (which == "src") {
+        T = G;
+    } else if (which == "new") {
+        T = NewImg;
+    }
+    switch (channel) {
+        case "r":
+            data = T.R_channel;
+            break;
+        case "g":
+            data = T.G_channel;
+            break;
+        case "b":
+            data = T.B_channel;
+            break;
+    }
+    var N = new Array(256);
+    var i, pixel;
+    for (i = 0; i < N.length; i++) {
+        N[i] = 0;
+    }
+    for (i = 0; i < data.length; i++) {
+        pixel = data[i];
+        N[pixel]++;
+    }
+    // Compute Normalized Histogram Data.
+    for (i = 0; i < 256; i++) {
+        N[i] = N[i] / data.length;
+        N[i] = N[i] == 1 ? 0 : N[i];
+    }
+    return N;
+}
+
+function drawSrcChart() {
+    var red = getHistogramData("r", "src");
+    var green = getHistogramData("g", "src");
+    var blue = getHistogramData("b", "src");
+
+    $('#histogram').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: '原图RGB三通道直方图'
+        },
+        subtitle: {
+            text: '某灰度值占整幅图像的比例'
+        },
+        xAxis: {
+            categories: [],
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: '所占比例'
             }
-        ]
-    };
-    var myChart = new Chart(chartCtx).Bar(data);
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">灰度值：{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.5f}</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [{
+            name: 'red',
+            data: red,
+            color: "#FF0000"
+        }, {
+            name: 'green',
+            data: green,
+            color: "#00FF00"
+        }, {
+            name: 'blue',
+            data: blue,
+            color: "#0000FF"
+        }]
+    });
+}
+
+function drawNewChart() {
+    var red = getHistogramData("r", "new");
+    var green = getHistogramData("g", "new");
+    var blue = getHistogramData("b", "new");
+
+    $('#histogram2').highcharts({
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: '处理后RGB三通道直方图'
+        },
+        subtitle: {
+            text: '某灰度值占整幅图像的比例'
+        },
+        xAxis: {
+            categories: [],
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+            title: {
+                text: '所占比例'
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">灰度值：{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.5f}</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [{
+            name: 'red',
+            data: red,
+            color: "#FF0000"
+        }, {
+            name: 'green',
+            data: green,
+            color: "#00FF00"
+        }, {
+            name: 'blue',
+            data: blue,
+            color: "#0000FF"
+        }]
+    });
 }
 /**
  * Created by zhoujh on 2016/1/2.
@@ -51,50 +198,67 @@ G.img_data = null;
 G.img_width = 0;
 G.img_height = 0;
 G.img_data_length = 0;
+G.img_type = null;
+G.R_channel = null;
+G.G_channel = null;
+G.B_channel = null;
 
+var NewImg = {
+    img_data: null,
+    img_width: 0,
+    img_height: 0,
+    img_data_length: 0,
+    R_channel: null,
+    G_channel: null,
+    B_channel: null
+};
 
-window.onload = function() {
+$(function() {
+    G.img.src = "./example.jpg";
+    G.img.onload = function() {
+        imread(G.img);
+    };
     HCI();
-}();
+}());
 /**
  * Created by zhoujh on 2016/1/2.
  */
 
-function getRChannel() {
+function getRChannel(T) {
     var output = [];
-    if (G.img_data === null) {
+    if (T.img_data === null) {
         console.log("No ImageData");
     }
-    for (var i = 0; i < G.img_data.data.length; i+=4) {
-        output.push(G.img_data.data[i]);
+    for (var i = 0; i < T.img_data.data.length; i+=4) {
+        output.push(T.img_data.data[i]);
     }
     return output;
 }
 
-function getGChannel() {
+function getGChannel(T) {
     var output = [];
-    if (G.img_data === null) {
+    if (T.img_data === null) {
         console.log("No ImageData");
     }
-    for (var i = 1; i < G.img_data.data.length; i+=4) {
-        output.push(G.img_data.data[i]);
+    for (var i = 1; i < T.img_data.data.length; i+=4) {
+        output.push(T.img_data.data[i]);
     }
     return output;
 }
 
-function getBChannel() {
+function getBChannel(T) {
     var output = [];
-    if (G.img_data === null) {
+    if (T.img_data === null) {
         console.log("No ImageData");
     }
-    for (var i = 2; i < G.img_data.data.length; i+=4) {
-        output.push(G.img_data.data[i]);
+    for (var i = 2; i < T.img_data.data.length; i+=4) {
+        output.push(T.img_data.data[i]);
     }
     return output;
 }
 
-function showRedImg() {
-    var red = getRChannel();
+function showRedImg(T) {
+    var red = getRChannel(T);
     var image_data = G.cxt.createImageData(G.img_width, G.img_height);
     var data = [];
     for (var i = 0, j = 0; i < G.img_data_length; i+=4, j++) {
@@ -109,8 +273,8 @@ function showRedImg() {
     G.cxt.putImageData(image_data, 0, 0, 0, 0, G.img_width, G.img_height);
 }
 
-function showGreenImg() {
-    var green = getGChannel();
+function showGreenImg(T) {
+    var green = getGChannel(T);
     var image_data = G.cxt.createImageData(G.img_width, G.img_height);
     var data = [];
     for (var i = 0, j = 0; i < G.img_data_length; i+=4, j++) {
@@ -125,8 +289,8 @@ function showGreenImg() {
     G.cxt.putImageData(image_data, 0, 0, 0, 0, G.img_width, G.img_height);
 }
 
-function showBlueImg() {
-    var blue = getBChannel();
+function showBlueImg(T) {
+    var blue = getBChannel(T);
     var image_data = G.cxt.createImageData(G.img_width, G.img_height);
     var data = [];
     for (var i = 0, j = 0; i < G.img_data_length; i+=4, j++) {
@@ -190,8 +354,41 @@ function imread(img) {
     resizeCanvas(width, height);
     G.cxt.drawImage(img, 0, 0, width, height);
     G.img_data = G.cxt.getImageData(0, 0, G.canvas.width, G.canvas.height);
+
     G.img_width = G.img_data.width;
     G.img_height = G.img_data.height;
     G.img_data_length = G.img_width * G.img_height * 4;
-    console.log(G);
+    G.R_channel = getRChannel(G);
+    G.G_channel = getGChannel(G);
+    G.B_channel = getBChannel(G);
+
+    G.img_type = "彩色图像";
+    for (var i = 0; i < 100; i++) {
+        if (G.R_channel[i] === G.B_channel[i] && G.B_channel[i] === G.G_channel[i]) {
+            G.img_type = "灰度图像";
+        }
+    }
+
+    drawSrcChart();
+    makeTable();
+}
+
+function makeTable() {
+    way.set("myTableData", {
+        "image_type": G.img_type,
+        "total_pixel": G.img_data_length,
+        "width": G.img_width + "px",
+        "height": G.img_height + "px"
+    });
+}
+
+function getNewImgData() {
+    NewImg.img_data = G.cxt.getImageData(0, 0, G.canvas.width, G.canvas.height);
+
+    NewImg.img_width = NewImg.img_data.width;
+    NewImg.img_height = NewImg.img_data.height;
+    NewImg.img_data_length = NewImg.img_width * NewImg.img_height * 4;
+    NewImg.R_channel = getRChannel(NewImg);
+    NewImg.G_channel = getGChannel(NewImg);
+    NewImg.B_channel = getBChannel(NewImg);
 }

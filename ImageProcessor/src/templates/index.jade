@@ -8,35 +8,45 @@ html(lang="en")
         link(rel="styleSheet" href="./dist/css/style.min.css")
         title Image Processor
     body
+        input#file(type="file")
         .ui.container-fluid
-            .ui.top.menu
+            .ui.top.fixed.inverted.menu#menu
                 .header.item
                     |Image Processor
-                a#openBtn.item open image
-                a.item save image
-                .ui.simple.dropdown.item option1
+                a.item#openBtn 打开图片
+                a.item#saveBtn 保存图片
+                .ui.simple.dropdown.item 显示单通道图像
                     i.dropdown.icon
                     .menu
-                        a.item item1
-                        a.item item2
-            .ui.segment
+                        a.item#rBtn R通道
+                        a.item#gBtn G通道
+                        a.item#bBtn B通道
+            #page-body
                 canvas#canvas
-            .ui.segment
-                h3 Image Information
-                table.ui.celled.table
-                    thead
-                        tr
-                            th biaotou
-                            th biaotou
-                    tbody
-                        tr
-                            td 11
-                            td 22
-            .ui.segment
-                canvas#chart(width="500" height="500")
-            input#file(type="file")
+                #table-wrapper
+                    table.ui.celled.table(way-scope = "myTableData")
+                        thead
+                            tr
+                                th 图片类型
+                                th 像素总数
+                                th 宽度
+                                th 高度
+                        tbody
+                            tr
+                                td(way-data="image_type") 0
+                                td(way-data="total_pixel") 0
+                                td(way-data="width") 0
+                                td(way-data="height") 0
+                .ui.two.column.grid#histogram-wrapper
+                    .column
+                        #histogram
+                    .column
+                        #histogram2
         script(type="text/javascript" src="./semantic/jquery.js")
         script(type="text/javascript" src="./semantic/semantic.min.js")
-        script(type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js")
+        script(type="text/javascript" src="https://code.highcharts.com/highcharts.js")
+        script(type="text/javascript" src="https://code.highcharts.com/modules/exporting.js")
+        script(type="text/javascript" src="./libs/way.min.js")
         script(type="text/javascript" src="./dist/js/main.js")
+
 
