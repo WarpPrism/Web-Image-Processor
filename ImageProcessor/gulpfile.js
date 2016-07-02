@@ -1,20 +1,23 @@
-// sudo npm install --save-dev gulp-jade gulp-sass gulp-cssnano gulp-jshint gulp-concat gulp-uglify gulp-rename gulp-webserver gulp-livereload gulp-clean
+// npm install --save-dev gulp gulp-pug gulp-sass gulp-clean-css gulp-autoprefixer gulp-livescript gulp-jshint gulp-concat gulp-uglify gulp-rename gulp-webserver gulp-livereload gulp-clean
 
 var gulp = require("gulp");
-var jade = require("gulp-jade");    // jade template engine
+var pug = require("gulp-pug");    // jade template engine
 
 var sass = require("gulp-sass");
-var cssnano = require("gulp-cssnano");     // minify css
+var cleanCss = require("gulp-clean-css");
+var autoprefixer = require("gulp-autoprefixer");
 
+var livescript = require("gulp-livescript");
 var jshint = require("gulp-jshint");    // js hint
 var concat = require("gulp-concat");    // js concat
-var uglify = require("gulp-uglify");    // js minify
+var uglify = require("gulp-uglify");    // js uglify
 var rename = require("gulp-rename");    // rename
 
 var webserver = require("gulp-webserver");  // a simple webserver
 var livereload = require("gulp-livereload");    // livereload
 
 var clean = require("gulp-clean");  // clean
+var errorNotifier = require('gulp-error-notifier');
 
 
 gulp.task("webserver", function() {
@@ -30,46 +33,60 @@ gulp.task("templates", function() {
     var dist = "./";
 
     gulp.src(src)
-        .pipe(jade())
+        .pipe(errorNotifier.handleError(
+            pug()
+        ))
         .pipe(gulp.dest(dist));
 });
 
-gulp.task("css", function() {
-    var src = "./src/css/*.scss";
+gulp.task("style", function() {
+    var src = "./src/scss/*.scss";
     var dist = "./dist/css/";
+
     gulp.src(src)
-        .pipe(sass())
+        .pipe(errorNotifier.handleError(
+            sass()
+        ))
+        .pipe(autoprefixer({
+            browsers: ['last 2 versions'],
+            cascade: false
+        }))
         .pipe(rename({suffix: ".min"}))
-        .pipe(cssnano())
+        .pipe(cleanCss())
         .pipe(gulp.dest(dist));
 });
 
-gulp.task("js", function() {
+gulp.task("script", function() {
     var src = "./src/js/*.js";
     var dist = "./dist/js/";
+
     gulp.src(src)
-        .pipe(jshint())
-        .pipe(jshint.reporter("default"))
+        // .pipe(errorNotifier.handleError(
+        //     livescript({
+        //         bare: true
+        //     })
+        // ))
         .pipe(concat("main.js"))
-        .pipe(gulp.dest(dist))
         .pipe(rename({suffix: ".min"}))
-        .pipe(uglify())
+        // .pipe(uglify())
         .pipe(gulp.dest(dist));
 });
 
 gulp.task("clean", function() {
-    gulp.src(["./dist/js/*"], {read: false})
+    var target = "./dist/*";
+
+    gulp.src([target], {read: false})
         .pipe(clean());
 });
 
 gulp.task("watch", function() {
     gulp.watch("./src/templates/*.jade", ["templates"]);
 
-    gulp.watch("./src/css/*.scss", ["css"]);
+    gulp.watch("./src/scss/*.scss", ["style"]);
 
-    gulp.watch("./src/js/*.js", ["js"]);
+    gulp.watch("./src/js/*.js", ["script"]);
 });
 
 gulp.task("default", function() {
-    gulp.start("clean", "webserver", "templates", "css", "js", "watch");
+    gulp.start("templates", "style", "script", "watch");
 });

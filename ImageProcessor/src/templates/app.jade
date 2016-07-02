@@ -1,0 +1,150 @@
+// Created by zhoujihao on 16-7-1.
+
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="description" content="Simple Image Processing App")
+    link(rel="stylesheet", href="node_modules/angular-material/angular-material.min.css")
+    link(rel="stylesheet", href="libs/font-awesome.min.css")
+    link(rel="stylesheet", href="dist/css/app.min.css")
+    link(rel="shortcut icon", href="favicon.png")
+    title Image Processor
+  body(ng-app="myApp" ng-cloak)
+    div#app-body(ng-controller="appController as appCtrl")
+      md-toolbar.md-menu-toolbar(layout="row")
+        md-toolbar-filter(layout layout-align="center center")
+          i.fa.fa-picture-o.icon(aria-hidden="true")
+        div
+          h2.md-toolbar-tools Web图像处理
+          md-menu-bar
+            md-menu(ng-controller="FileController as file")
+              button(ng-click="$mdOpenMenu()") 文件
+              md-menu-content(width="3")
+                md-menu-item
+                  md-button(ng-click="file.openImg()")
+                    i.fa.fa-file.icon(aria-hidden="true")
+                    |打开图片
+                md-menu-divider
+                md-menu-item
+                  md-button(ng-click="file.downloadImg()")
+                    i.fa.fa-download.icon(aria-hidden="true")
+                    |保存图片
+                md-menu-divider
+                md-menu-item
+                  md-button(ng-click="file.recoverIMG()")
+                    i.fa.fa-repeat.icon(aria-hidden="true")
+                    |恢复原图
+                md-menu-divider
+                md-menu-item
+                  md-button(ng-click="file.Undo()")
+                    i.fa.fa-undo.icon(aria-hidden="true")
+                    |撤销
+
+            md-menu(ng-controller="LvJingController as lj")
+              button(ng-click="$mdOpenMenu()") 基本滤镜
+              md-menu-content(width="3")
+                md-menu-item
+                  md-button(ng-click="lj.toReverse()") 反色
+                md-menu-divider
+                md-menu-item
+                  md-button(ng-click="lj.toGray()") 灰度
+                md-menu-divider
+                md-menu-item
+                  md-button(ng-click="lj.toThresh()") 二值化
+                md-menu-divider
+                md-menu-item
+                  md-button(ng-click="lj.gaussBlur()") 高斯模糊
+                md-menu-divider
+                md-menu-item
+                  md-button(ng-click="lj.sharp()") 锐化
+                md-menu-divider
+                md-menu-item
+                  md-button(ng-click="lj.mosaic()") 马赛克
+                md-menu-divider
+                md-menu-item
+                  md-button(ng-click="lj.embossment()") 浮雕
+                md-menu-divider
+                md-menu-item
+                  md-button(ng-click="lj.corrode()") 腐蚀
+
+            md-menu(ng-controller="PSController as ps")
+              button(ng-click="$mdOpenMenu()") 复合效果
+              md-menu-content(width="3")
+                md-menu-item
+                  md-button(ng-click="ps.softenFace()") 美肤
+                md-menu-divider
+                md-menu-item
+                  md-button(ng-click="ps.sketch()") 素描
+                md-menu-divider
+                md-menu-item
+                  md-button(ng-click="ps.softEnhancement()") 自然增强
+                md-menu-divider
+                md-menu-item
+                  md-button(ng-click="ps.purpleStyle()") 紫调
+                md-menu-divider
+                md-menu-item
+                  md-button(ng-click="ps.soften()") 柔焦
+                md-menu-divider
+                md-menu-item
+                  md-button(ng-click="ps.lomo()") 仿lomo
+                md-menu-divider
+                md-menu-item
+                  md-button(ng-click="ps.warmAutumn()") 暖秋
+                md-menu-divider
+                md-menu-item
+                  md-button(ng-click="ps.rough()") 粗糙
+                md-menu-divider
+                md-menu-item
+                  md-button(ng-click="ps.vintage()") 复古
+
+
+      md-content
+        div.md-padding#history-bar(layout="column")
+          h4.md-title
+            i.fa.fa-history
+            |&nbsp;&nbsp;操作历史 (最多支持10条记录)
+          md-chips
+            md-chip 0:原图
+            md-chip(ng-repeat="item in operations track by $index") {{$index + 1 + ':' + item}}
+
+        div(layout="row" layout-align="center center")
+          img#IMG(src="assets/lake.jpg", alt="No Image Found")
+        div.md-padding(flex layout-xs="column" layout="row" layout-align="space-around" ng-controller="basicInfoCtrl as info")
+          md-card(md-theme="dark-blue" flex="35" flex-xs="100")
+            md-card-title
+              md-card-title-text
+                span.md-headline
+                  i.fa.fa-file-image-o
+                  span &nbsp;&nbsp;图片基本信息
+            md-card-content
+              md-list
+                md-list-item(ng-click="null")
+                  p 高度: {{info.img_height}}
+                md-divider
+                md-list-item(ng-click="null")
+                  p 宽度: {{info.img_width}}
+                md-divider
+                md-list-item(ng-click="null")
+                  p 像素总数: {{info.img_data_length}}
+                md-divider
+                md-list-item(ng-click="null")
+                  p 类型: {{info.img_type}}
+                md-divider
+            md-card-actions.md-padding(layout="row" layout-align="end center")
+              md-button.md-raised(ng-click="info.update()") 更新当前图片信息
+          div#histogram(flex="55" flex-xs="100")
+
+        div#footer(layout="row" layout-align="center center")
+          p copyright &copy; 2016 SYSU
+        input#file(type="file" accept="image/*" style="display:none" aria-label="read image input")
+
+    script(type="text/javascript" src="node_modules/angular/angular.js")
+    script(type="text/javascript" src="node_modules/angular-animate/angular-animate.min.js")
+    script(type="text/javascript" src="node_modules/angular-aria/angular-aria.min.js")
+    script(type="text/javascript" src="node_modules/angular-material/angular-material.min.js")
+    script(type="text/javascript" src="libs/alloyimage.1.2b.js")
+    script(type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js")
+    script(type="text/javascript" src="https://code.highcharts.com/highcharts.js")
+    script(type="text/javascript" src="https://code.highcharts.com/modules/exporting.js")
+    script(type="text/javascript" src="dist/js/main.min.js")
