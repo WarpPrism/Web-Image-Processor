@@ -11,7 +11,7 @@ html(lang="en")
     link(rel="shortcut icon", href="favicon.png")
     title Image Processor
   body(ng-app="myApp" ng-cloak)
-    div#app-body(ng-controller="appController as appCtrl")
+    div#app-body(ng-controller="appController as app")
       md-toolbar.md-menu-toolbar(layout="row")
         md-toolbar-filter(layout layout-align="center center")
           i.fa.fa-picture-o.icon(aria-hidden="true")
@@ -20,7 +20,7 @@ html(lang="en")
           md-menu-bar
             md-menu(ng-controller="FileController as file")
               button(ng-click="$mdOpenMenu()") 文件
-              md-menu-content(width="3")
+              md-menu-content(width="4")
                 md-menu-item
                   md-button(ng-click="file.openImg()")
                     i.fa.fa-file.icon(aria-hidden="true")
@@ -40,6 +40,18 @@ html(lang="en")
                   md-button(ng-click="file.Undo()")
                     i.fa.fa-undo.icon(aria-hidden="true")
                     |撤销
+            md-menu(ng-controller="BasicOpController as basic")
+              button(ng-click="$mdOpenMenu()") 基本操作
+              md-menu-content(width="3")
+                md-menu-item
+                  md-button(ng-click="basic.resizeImg()") 图片放缩
+                md-menu-divider
+                md-menu-item
+                  md-button(ng-click="basic.rotateImgC()") 顺时针旋转90度
+                md-menu-divider
+                md-menu-item
+                  md-button(ng-click="basic.rotateImgA()") 逆时针旋转90度
+                md-menu-divider
 
             md-menu(ng-controller="LvJingController as lj")
               button(ng-click="$mdOpenMenu()") 基本滤镜
@@ -96,20 +108,29 @@ html(lang="en")
                   md-button(ng-click="ps.rough()") 粗糙
                 md-menu-divider
                 md-menu-item
+                  md-button(ng-click="ps.carveStyle()") 木雕
+                md-menu-divider
+                md-menu-item
                   md-button(ng-click="ps.vintage()") 复古
 
 
+      div.gradient-boundary
       md-content
-        div.md-padding#history-bar(layout="column")
-          h4.md-title
-            i.fa.fa-history
-            |&nbsp;&nbsp;操作历史 (最多支持10条记录)
-          md-chips
-            md-chip 0:原图
-            md-chip(ng-repeat="item in operations track by $index") {{$index + 1 + ':' + item}}
+        div(layout="row")
+          div.md-padding#history-bar(layout="column" flex="80")
+            h4.md-title
+              i.fa.fa-history
+              |&nbsp;&nbsp;操作历史 (最多支持10条记录)
+            md-chips
+              md-chip 0:原图
+              md-chip(ng-repeat="item in operations track by $index") {{$index + 1 + ':' + item}}
+          div.md-padding(layout="column" layout-align="center center" flex="20")
+            md-progress-circular.md-accent(md-diameter="40" ng-if="app.activated" ng-disabled="!app.activated")
 
-        div(layout="row" layout-align="center center")
-          img#IMG(src="assets/lake.jpg", alt="No Image Found")
+        div#img-div(layout="column" layout-align="center center")
+          img#IMG(src="assets/girl.jpg", alt="No Image Found")
+
+        div.gradient-boundary
         div.md-padding(flex layout-xs="column" layout="row" layout-align="space-around" ng-controller="basicInfoCtrl as info")
           md-card(md-theme="dark-blue" flex="35" flex-xs="100")
             md-card-title
@@ -136,7 +157,7 @@ html(lang="en")
           div#histogram(flex="55" flex-xs="100")
 
         div#footer(layout="row" layout-align="center center")
-          p copyright &copy; 2016 SYSU
+          p 2016 In SYSU
         input#file(type="file" accept="image/*" style="display:none" aria-label="read image input")
 
     script(type="text/javascript" src="node_modules/angular/angular.js")

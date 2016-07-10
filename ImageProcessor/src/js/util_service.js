@@ -115,5 +115,14 @@ function Util() {
         });
     };
 
+    obj.throttle = function(fn, delay) {
+        if (fn.timer) {
+            clearTimeout(fn.timer);
+        }
+        fn.timer = setTimeout(function() {
+            fn.call();
+        }, delay);
+    };
+
     return obj;
 }

@@ -3,8 +3,9 @@ angular.module("myApp", ['ngMaterial'])
     .config(function($mdThemingProvider) {
         $mdThemingProvider.theme('dark-blue').backgroundPalette('blue').dark();
     })
-    .controller("appController", ["$mdDialog", "$rootScope", "$scope", appController])
+    .controller("appController", ["$mdDialog", "$rootScope", "$scope", "$interval", appController])
     .controller("FileController", ["$scope", "$rootScope", FileController])
+    .controller("BasicOpController", ["$mdDialog", "$scope", "$rootScope", BasicOpController])
     .controller("LvJingController", ["$scope", "$rootScope", LvJingController])
     .controller("PSController", ["$rootScope", PSController])
     .controller("basicInfoCtrl", ["Util", "$scope", "$rootScope", basicInfoCtrl])
@@ -25,8 +26,14 @@ angular.module("myApp", ['ngMaterial'])
         r.operations = [];
     });
 
-function appController($mdDialog, $rootScope, $scope) {
+function appController($mdDialog, $rootScope, $scope, $interval) {
     var r = $rootScope;
+    var self = this;
+    self.activated = false;
+
+    r.toggleProcess = function() {
+        self.activated = !self.activated;
+    };
 
     r.showAlert = function(title, content) {
         $mdDialog.show(
@@ -42,14 +49,13 @@ function appController($mdDialog, $rootScope, $scope) {
     };
 
     // 图片处理效果完成之后的回调函数
-    r.updateHistory = function(content) {
+    r.callback = function(content) {
         if (r.history.length >= 10) {
             r.history.shift();
             r.operations.shift();
         }
         r.history.push(r.AI.clone());
         r.operations.push(content);
-
         r.updateImgInfo();
     }
 }
@@ -120,146 +126,207 @@ function FileController($scope, $rootScope) {
     };
 }
 
+function BasicOpController($mdDialog, $scope, $rootScope) {
+    var self = this;
+    var r = $rootScope;
+
+    // 图片放缩
+    self.resizeImg = function() {
+        var confirm = $mdDialog.confirm()
+            .title('图片放缩')
+            .textContent('请选择放大图片还是缩小图片？')
+            .ariaLabel('resize image')
+            .ok('放大')
+            .cancel('缩小');
+        $mdDialog.show(confirm).then(function() {
+            if (r.img.clientWidth < r.img.parentNode.clientWidth * 0.8) {
+                r.AI.scale(1.1, 1.1).replace(r.img);
+            } else {
+                r.showAlert("提示", "图片已经放大到最大限度!");
+            }
+        }, function() {
+            if (r.img.clientWidth > r.img.parentNode.clientWidth * 0.1) {
+                r.AI.scale(0.9, 0.9).replace(r.img);
+            } else {
+                r.showAlert("提示", "图片已经缩小到最小限度!");
+            }
+        });
+    };
+
+    self.rotateImgC = function() {
+        r.AI.rotate(90).replace(r.img);
+    };
+    self.rotateImgA = function() {
+        r.AI.rotate(-90).replace(r.img);
+    };
+}
+
 function LvJingController($scope, $rootScope) {
     var self = this;
+    var r = $rootScope;
 
     // 反色
     self.toReverse = function() {
-        $rootScope.AI.act("toReverse").replace($rootScope.img).complete(function() {
-            $rootScope.showAlert("提示", "反色操作完成！");
-            $rootScope.updateHistory("反色");
+        r.AI.act("toReverse").replace(r.img).complete(function() {
+            r.showAlert("提示", "反色操作完成！");
+            r.callback("反色");
         });
     };
 
     // 转为灰度图像
     self.toGray = function() {
-        $rootScope.AI.act("toGray").replace($rootScope.img).complete(function() {
-            $rootScope.showAlert("提示", "已转为灰度图像！");
-            $rootScope.updateHistory("灰度");
+        r.AI.act("toGray").replace(r.img).complete(function() {
+            r.showAlert("提示", "已转为灰度图像！");
+            r.callback("灰度");
         });
     };
 
     // 二值化
     self.toThresh = function() {
-        $rootScope.AI.act("toThresh", 128).replace($rootScope.img).complete(function() {
-            $rootScope.showAlert("提示", "二值化操作完成！");
-            $rootScope.updateHistory("二值化");
+        r.AI.act("toThresh", 128).replace(r.img).complete(function() {
+            r.showAlert("提示", "二值化操作完成！");
+            r.callback("二值化");
         });
     };
 
     // 高斯模糊
     self.gaussBlur = function() {
-        $rootScope.AI.act("gaussBlur", 7).replace($rootScope.img).complete(function() {
-            $rootScope.showAlert("提示", "高斯模糊完成！");
-            $rootScope.updateHistory("高斯模糊");
+        r.AI.act("gaussBlur", 7).replace(r.img).complete(function() {
+            r.showAlert("提示", "高斯模糊完成！");
+            r.callback("高斯模糊");
         });
     };
 
     // 锐化
     self.sharp = function() {
-        $rootScope.AI.act("sharp", 2).replace($rootScope.img).complete(function() {
-            $rootScope.showAlert("提示", "锐化操作完成！");
-            $rootScope.updateHistory("锐化");
+        r.AI.act("sharp", 2).replace(r.img).complete(function() {
+            r.showAlert("提示", "锐化操作完成！");
+            r.callback("锐化");
         });
     };
 
     // 马赛克
     self.mosaic = function() {
-        $rootScope.AI.act("mosaic", 3).replace($rootScope.img).complete(function() {
-            $rootScope.showAlert("提示", "马赛克操作完成！");
-            $rootScope.updateHistory("马赛克");
+        r.AI.act("mosaic", 3).replace(r.img).complete(function() {
+            r.showAlert("提示", "马赛克操作完成！");
+            r.callback("马赛克");
         });
     };
 
     // 浮雕
     self.embossment = function() {
-        $rootScope.AI.act("embossment").replace($rootScope.img).complete(function() {
-            $rootScope.showAlert("提示", "浮雕操作完成！");
-            $rootScope.updateHistory("浮雕");
+        r.AI.act("embossment").replace(r.img).complete(function() {
+            r.showAlert("提示", "浮雕操作完成！");
+            r.callback("浮雕");
         });
     };
 
     // 腐蚀
     self.corrode = function() {
-        $rootScope.AI.act("corrode").replace($rootScope.img).complete(function() {
-            $rootScope.showAlert("提示", "腐蚀操作完成！");
-            $rootScope.updateHistory("腐蚀");
+        r.AI.act("corrode").replace(r.img).complete(function() {
+            r.showAlert("提示", "腐蚀操作完成！");
+            r.callback("腐蚀");
         });
     };
 }
 
 function PSController($rootScope) {
     var self = this;
+    var r = $rootScope;
 
     // 美肤
     self.softenFace = function() {
-        $rootScope.AI.ps("softenFace").replace($rootScope.img).complete(function() {
-            $rootScope.showAlert("提示", "美肤操作完成！");
-            $rootScope.updateHistory("美肤");
+        r.toggleProcess();
+        r.AI.ps("softenFace").replace(r.img).complete(function() {
+            r.showAlert("提示", "美肤操作完成！");
+            r.callback("美肤");
+            r.toggleProcess();
         });
     };
 
     // 素描
     self.sketch = function() {
-        $rootScope.AI.ps("sketch").replace($rootScope.img).complete(function() {
-            $rootScope.showAlert("提示", "素描完成！");
-            $rootScope.updateHistory("素描");
+        r.toggleProcess();
+        r.AI.ps("sketch").replace(r.img).complete(function() {
+            r.showAlert("提示", "素描完成！");
+            r.callback("素描");
+            r.toggleProcess();
         });
     };
 
     // 自然增强
     self.softEnhancement = function() {
-        $rootScope.AI.ps("softEnhancement").replace($rootScope.img).complete(function() {
-            $rootScope.showAlert("提示", "自然增强完成！");
-            $rootScope.updateHistory("自然增强");
+        r.AI.ps("softEnhancement").replace(r.img).complete(function() {
+            r.showAlert("提示", "自然增强完成！");
+            r.callback("自然增强");
         });
     };
 
     // 紫调
     self.purpleStyle = function() {
-        $rootScope.AI.ps("purpleStyle").replace($rootScope.img).complete(function() {
-            $rootScope.showAlert("提示", "紫调操作完成！");
-            $rootScope.updateHistory("紫调");
+        r.toggleProcess();
+        r.AI.ps("purpleStyle").replace(r.img).complete(function() {
+            r.showAlert("提示", "紫调操作完成！");
+            r.callback("紫调");
+            r.toggleProcess();
         });
     };
 
     // 柔焦
     self.soften = function() {
-        $rootScope.AI.ps("soften").replace($rootScope.img).complete(function() {
-            $rootScope.showAlert("提示", "柔焦操作完成！");
-            $rootScope.updateHistory("柔焦");
+        r.AI.ps("soften").replace(r.img).complete(function() {
+            r.showAlert("提示", "柔焦操作完成！");
+            r.callback("柔焦");
         });
     };
 
     // 仿lomo
     self.lomo = function() {
-        $rootScope.AI.ps("lomo").replace($rootScope.img).complete(function() {
-            $rootScope.showAlert("提示", "仿lomo操作完成！");
-            $rootScope.updateHistory("仿lomo");
+        r.toggleProcess();
+        r.AI.ps("lomo").replace(r.img).complete(function() {
+            r.showAlert("提示", "仿lomo操作完成！");
+            r.callback("仿lomo");
+            r.toggleProcess();
         });
     };
 
     // 暖秋
     self.warmAutumn = function() {
-        $rootScope.AI.ps("warmAutumn").replace($rootScope.img).complete(function() {
-            $rootScope.showAlert("提示", "暖秋操作完成！");
-            $rootScope.updateHistory("暖秋");
+        r.toggleProcess();
+        r.AI.ps("warmAutumn").replace(r.img).complete(function() {
+            r.showAlert("提示", "暖秋操作完成！");
+            r.callback("暖秋");
+            r.toggleProcess();
         });
     };
 
     // 粗糙
     self.rough = function() {
-        $rootScope.AI.ps("rough").replace($rootScope.img).complete(function() {
-            $rootScope.showAlert("提示", "粗糙操作完成！");
-            $rootScope.updateHistory("粗糙");
+        r.toggleProcess();
+        r.AI.ps("rough").replace(r.img).complete(function() {
+            r.showAlert("提示", "粗糙操作完成！");
+            r.callback("粗糙");
+            r.toggleProcess();
+        });
+    };
+
+    // 木雕
+    self.carveStyle = function() {
+        r.toggleProcess();
+        r.AI.ps("carveStyle").replace(r.img).complete(function() {
+            r.showAlert("提示", "木雕操作完成！");
+            r.callback("木雕");
+            r.toggleProcess();
         });
     };
 
     // 复古
     self.vintage = function() {
-        $rootScope.AI.ps("vintage").replace($rootScope.img).complete(function() {
-            $rootScope.showAlert("提示", "复古操作完成！");
-            $rootScope.updateHistory("复古");
+        r.toggleProcess();
+        r.AI.ps("vintage").replace(r.img).complete(function() {
+            r.showAlert("提示", "复古操作完成！");
+            r.callback("复古");
+            r.toggleProcess();
         });
     };
 }
@@ -269,7 +336,7 @@ function basicInfoCtrl(Util, $scope, $rootScope) {
     var self = this;
 
     self.update = function() {
-        r.updateImgInfo();
+        Util.throttle(r.updateImgInfo, 1000);
     };
 
     r.updateImgInfo = function() {
@@ -297,10 +364,9 @@ function basicInfoCtrl(Util, $scope, $rootScope) {
             if (x > 25) {
                 self.img_type = "灰度图像";
             }
-
             setTimeout(function() {
-                Util.drawHistogram(r.imgData)
-            }, 500);
+                Util.drawHistogram(r.imgData);
+            }, 100);
         });
     };
 }
