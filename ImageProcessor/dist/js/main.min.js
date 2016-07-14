@@ -3,7 +3,7 @@ angular.module("myApp", ['ngMaterial'])
     .config(function($mdThemingProvider) {
         $mdThemingProvider.theme('dark-blue').backgroundPalette('blue').dark();
     })
-    .controller("appController", ["$mdDialog", "$rootScope", "$scope", "$interval", appController])
+    .controller("appController", ["Util", "$mdDialog", "$rootScope", "$scope", "$interval", appController])
     .controller("FileController", ["$scope", "$rootScope", FileController])
     .controller("BasicOpController", ["$mdDialog", "$scope", "$rootScope", BasicOpController])
     .controller("LvJingController", ["$scope", "$rootScope", LvJingController])
@@ -11,6 +11,7 @@ angular.module("myApp", ['ngMaterial'])
     .controller("basicInfoCtrl", ["Util", "$scope", "$rootScope", basicInfoCtrl])
     .service("Util", [Util])
     .run(function($rootScope) {
+
         window.URL = window.URL || window.webkitURL;
         // 开启多线程
         $AI.useWorker("libs/alloyimage.1.2b.js");
@@ -26,7 +27,7 @@ angular.module("myApp", ['ngMaterial'])
         r.operations = [];
     });
 
-function appController($mdDialog, $rootScope, $scope, $interval) {
+function appController(Util, $mdDialog, $rootScope, $scope, $interval) {
     var r = $rootScope;
     var self = this;
     self.activated = false;
@@ -44,7 +45,6 @@ function appController($mdDialog, $rootScope, $scope, $interval) {
                 .textContent(content)
                 .ariaLabel('Alert Dialog Demo')
                 .ok('好的')
-                .targetEvent()
         );
     };
 
@@ -57,7 +57,23 @@ function appController($mdDialog, $rootScope, $scope, $interval) {
         r.history.push(r.AI.clone());
         r.operations.push(content);
         r.updateImgInfo();
-    }
+    };
+
+    self.compareDown = function() {
+        r.origin.replace(r.img);
+    };
+
+    self.compareUp = function() {
+        r.AI.replace(r.img);
+        var btn = document.getElementById("compare-btn");
+        btn.setAttribute("disabled", "disabled");
+        btn.style.background = "rgb(200, 200, 200)";
+        setTimeout(function() {
+            console.log("OK");
+            btn.removeAttribute("disabled");
+            btn.style.background = "rgb(16, 108, 200)";
+        }, 1000);
+    };
 }
 
 function FileController($scope, $rootScope) {
@@ -139,25 +155,30 @@ function BasicOpController($mdDialog, $scope, $rootScope) {
             .ok('放大')
             .cancel('缩小');
         $mdDialog.show(confirm).then(function() {
-            if (r.img.clientWidth < r.img.parentNode.clientWidth * 0.8) {
-                r.AI.scale(1.1, 1.1).replace(r.img);
+            if (r.img.clientWidth < r.img.parentNode.clientWidth * 0.7) {
+                r.AI.scale(1.3, 1.3).replace(r.img);
+                r.callback("放大图像");
             } else {
                 r.showAlert("提示", "图片已经放大到最大限度!");
             }
         }, function() {
             if (r.img.clientWidth > r.img.parentNode.clientWidth * 0.1) {
-                r.AI.scale(0.9, 0.9).replace(r.img);
+                r.AI.scale(0.7, 0.7).replace(r.img);
+                r.callback("缩小图像");
             } else {
                 r.showAlert("提示", "图片已经缩小到最小限度!");
             }
         });
     };
 
+    // 顺时针，逆时针旋转
     self.rotateImgC = function() {
         r.AI.rotate(90).replace(r.img);
+        r.callback("顺时针旋转90度");
     };
     self.rotateImgA = function() {
         r.AI.rotate(-90).replace(r.img);
+        r.callback("逆时针旋转90度");
     };
 }
 
