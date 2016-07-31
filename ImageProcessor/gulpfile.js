@@ -1,10 +1,9 @@
-// npm install --save-dev gulp gulp-pug gulp-sass gulp-clean-css gulp-autoprefixer gulp-livescript gulp-jshint gulp-concat gulp-uglify gulp-rename gulp-webserver gulp-livereload gulp-clean
 
 var gulp = require("gulp");
 var pug = require("gulp-pug");    // jade template engine
 
 var sass = require("gulp-sass");
-var cleanCss = require("gulp-clean-css");
+var cleanCss = require("gulp-clean-css");   // css minify
 var autoprefixer = require("gulp-autoprefixer");
 
 var livescript = require("gulp-livescript");
@@ -16,15 +15,16 @@ var rename = require("gulp-rename");    // rename
 var webserver = require("gulp-webserver");  // a simple webserver
 var livereload = require("gulp-livereload");    // livereload
 
-var clean = require("gulp-clean");  // clean
+var clean = require("gulp-clean");
 var errorNotifier = require('gulp-error-notifier');
 
 
-gulp.task("webserver", function() {
+gulp.task("serve", function() {
     gulp.src("./")
         .pipe(webserver({
             livereload:true,
-            open:false
+            open:true,
+            directoryListing: false
         }));
 });
 
@@ -66,9 +66,11 @@ gulp.task("script", function() {
         //         bare: true
         //     })
         // ))
+        // .pipe(jshint())
+        // .pipe(jshint.reporter('default'))
         .pipe(concat("main.js"))
         .pipe(rename({suffix: ".min"}))
-        // .pipe(uglify())
+        //.pipe(uglify())
         .pipe(gulp.dest(dist));
 });
 
@@ -88,5 +90,5 @@ gulp.task("watch", function() {
 });
 
 gulp.task("default", function() {
-    gulp.start("templates", "style", "script", "watch");
+    gulp.start("templates", "style", "script", "serve", "watch");
 });

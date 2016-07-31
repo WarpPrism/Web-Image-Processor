@@ -115,6 +115,7 @@ function Util() {
         });
     };
 
+    // JS Throttle Function
     obj.throttle = function(fn, delay) {
         if (fn.timer) {
             clearTimeout(fn.timer);
@@ -122,6 +123,99 @@ function Util() {
         fn.timer = setTimeout(function() {
             fn.call();
         }, delay);
+    };
+
+    /*-----------------------------------*\
+        COMMONAPI
+    \*-----------------------------------*/
+    obj.addHandler = function(ele, type, handler) {
+        if (ele.addEventListener) {
+            ele.addEventListener(type, handler, false);
+        } else if (ele.attachEvent) {
+            ele.attachEvent('on' + type, handler);
+        } else {
+            ele['on' + type] = handler;
+        }
+    };
+
+    // 由RGBA一维数组 获得图片亮度值组成的 二维数组。
+    obj.RGBA2Intensity = function(img_data) {
+        var output = new Array(img_data.height);
+        var data = img_data.data;
+    
+        for (var iter = 0; iter < output.length; iter++) {
+            output[iter] = new Array(img_data.width);
+        }
+    
+        var k = 0;
+        for (var i = 0; i < img_data.height; i++) {
+            for (var j = 0; j < img_data.width; j++) {
+                var intensity;
+                // I = 1 / 3 *  (R + G + B)
+                intensity = parseInt(1/3 * data[k] + 1/3 * data[k + 1] + 1/3 * data[k + 2]);
+                output[i][j] = intensity;
+                k += 4;
+            }
+        }
+        return output;
+    }
+
+    // Convert 1-dimension array of RGBA to 2-dimension gray array.
+    obj.RGBA2Gray = function(img_data) {
+        var output = new Array(img_data.height);
+        var data = img_data.data;
+    
+        for (var iter = 0; iter < output.length; iter++) {
+            output[iter] = new Array(img_data.width);
+        }
+    
+        var k = 0;
+        for (var i = 0; i < img_data.height; i++) {
+            for (var j = 0; j < img_data.width; j++) {
+                var gray;
+                gray = Math.round(0.299 * data[k] + 0.587 * data[k + 1] + 0.114 * data[k + 2]);
+                output[i][j] = gray;
+                k += 4;
+            }
+        }
+    
+        return output;
+    }
+
+    obj.RGBATo3dimRGB = function(img_data) {
+
+        // construct 3-dim array
+        var output = new Array(img_data.height);
+        for (var i = 0; i < output.length; i++) {
+            output[i] = new Array(img_data.width);
+        }
+        for (i = 0; i < output.length; i++) {
+            for (var j = 0; j < output[i].length; j++) {
+                output[i][j] = new Array(3);
+            }
+        }
+    
+        var k = 0;
+        var data = img_data.data;
+        for (i = 0; i < img_data.height; i++) {
+            for (j = 0; j < img_data.width; j++) {
+                output[i][j][0] = data[k];      //R
+                output[i][j][1] = data[k + 1];  //G
+                output[i][j][2] = data[k + 2];  //B
+                k+=4;
+            }
+        }
+        return output;
+    };
+
+    obj.saveFile = function(data, filename){
+        var save_link = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
+        save_link.href = data;
+        save_link.download = filename;
+    
+        var event = document.createEvent('MouseEvents');
+        event.initMouseEvent('click', true, false, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+        save_link.dispatchEvent(event);
     };
 
     return obj;
