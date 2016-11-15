@@ -3,11 +3,11 @@ A simple digital image processor using javascript.
 
 
 Stereo Matching:
-<http://warpprism.github.io/WebImageProcessor/StereoMatching/>
+<https://warpprism.github.io/WebImageProcessor/StereoMatching/>
 
 
 Image Processor:
-<http://warpprism.github.io/WebImageProcessor/ImageProcessor/>
+<https://warpprism.github.io/WebImageProcessor/ImageProcessor/>
 
 Tech Stack:
 - gulp automatic flow. 
