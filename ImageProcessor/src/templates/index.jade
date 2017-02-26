@@ -131,7 +131,7 @@ html(lang="en" ng-app="myApp" ng-cloak)
           div.md-padding#circular-div(layout="column" layout-align="center center" flex="10")
             md-progress-circular.md-accent(md-diameter="40" ng-if="app.activated" ng-disabled="!app.activated")
           div.md-padding(layout="column" layout-align="center start")
-            md-button.md-raised#compare-btn( ng-mousedown="app.compareDown()" ng-mouseup="app.compareUp()") 对比原图
+            md-button.md-raised#compare-btn( ng-mousedown="app.compareDown()" ng-mouseup="app.compareUp()") 按住此按钮对比原图
         div#img-div(layout="column" layout-align="center center")
           img#IMG(src="assets/girl.jpg", alt="No Image Found")
 
@@ -170,7 +170,7 @@ html(lang="en" ng-app="myApp" ng-cloak)
     script(type="text/javascript" src="node_modules/angular-aria/angular-aria.min.js")
     script(type="text/javascript" src="node_modules/angular-material/angular-material.min.js")
     script(type="text/javascript" src="libs/alloyimage.1.2b.js")
-    script(type="text/javascript" src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js")
+    script(type="text/javascript" src="libs/jquery-3.1.1.min.js")
     script(type="text/javascript" src="https://code.highcharts.com/highcharts.js")
     script(type="text/javascript" src="https://code.highcharts.com/modules/exporting.js")
     script(type="text/javascript" src="dist/js/main.min.js")

@@ -6,8 +6,8 @@ var sass = require("gulp-sass");
 var cleanCss = require("gulp-clean-css");   // css minify
 var autoprefixer = require("gulp-autoprefixer");
 
-var livescript = require("gulp-livescript");
-var jshint = require("gulp-jshint");    // js hint
+// var livescript = require("gulp-livescript");
+// var jshint = require("gulp-jshint");    // js hint
 var concat = require("gulp-concat");    // js concat
 var uglify = require("gulp-uglify");    // js uglify
 var rename = require("gulp-rename");    // rename
